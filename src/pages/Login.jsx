@@ -4,7 +4,7 @@ import React from "react";
 const Login = () => {
     const handleGoogleLogin = () => {
         // window.location.href = "http://localhost:3000/auth/google";
-        window.location.href = "https://admin-kappa-pied-76.vercel.app/auth/google/callback";
+        window.location.href = "https://admin-kappa-pied-76.vercel.app/auth/google";
       };
     
       return (
