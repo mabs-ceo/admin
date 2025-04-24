@@ -17,7 +17,7 @@ export default function ProtectedRoute() {
           setIsAuthChecked(true);
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error('Auth check failed:', error.message || error);
         navigate('/', { replace: true });
       }
     };
@@ -28,8 +28,8 @@ export default function ProtectedRoute() {
   if (!isAuthChecked) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-900">
-        <div className="w-16 h-16 border-4 border-slate-50 border-dashed rounded-full animate-spin" />
-      </div>
+  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+</div>
     );
   }
 

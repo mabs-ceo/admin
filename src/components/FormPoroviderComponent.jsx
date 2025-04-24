@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import {createProvider} from "../functions"
 
 
-const formData = {
-  name: '',
-  email: '',
-  uen: '',
-contact:0,
-  postal: 0,
-  
-}
 
 
 export default function FormPoroviderComponent({f5}) {
+  const formData = {
+    name: '',
+    email: '',
+    uen: '',
+  contact:0,
+    postal: 0,
+    
+  }
   const[isShown, setIsShown] = useState(false)
   const[success, setSuccess] = useState('')
   const [form, setForm] = useState(formData)
@@ -39,30 +39,47 @@ export default function FormPoroviderComponent({f5}) {
 
    async function handleSubmit(e) {
     
-        e.preventDefault()
-     setLoading(true)
-     const response = await  createProvider(form)
+    //     e.preventDefault()
+    //  setLoading(true)
+    //  const response = await  createProvider(form)
  
-      if (response !== 201) {
-        setError('Error: Please check all the fields')
-        setForm(formData)
-        f5()
-      }else {        setSuccess('Provider Created Successfully')
+    //   if (response !== 201) {
+    //     setError('Error: Please check all the fields')
+    //     setForm(formData)
+    //     f5()
+    //   }else {        setSuccess('Provider Created Successfully')
 
-        setForm(formData)
+    //     setForm(formData)
+
+      e.preventDefault()
+        setLoading(true)
+        try {
+          const response = await createProvider(form)
+          if(response !== 201){
+            setError('Error: Please check all the fields')
+          }else{
+            setSuccess('Provider created successfully')
+          }
+        } catch (error) {
+          console.error(err)
+        setError('Server error. Try again later.')
+        }finally{
+          setTimeout(()=>{
+            setSuccess('')
+            setError('')
+            setLoading(false)
+            setForm(formData)
+            f5()
+          },3000)
+        }
+
       }
       
   
    
      
-      setTimeout(() => {
-        setSuccess('')
-        setError('')
-        f5()
-        setForm(formData)
-        
-      }, 3000)
-    }
+     
+    
   
   return (
     <div className="w-full    bg-slate-800 shadow-2xl ring-1 ring-slate-600/20 ">
@@ -115,7 +132,7 @@ export default function FormPoroviderComponent({f5}) {
     </div>
 
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium">email</label>
+      <label className="text-sm font-medium">Email</label>
       <input
         onChange={handleChange}
         name='email'
@@ -126,7 +143,7 @@ export default function FormPoroviderComponent({f5}) {
       />
     </div>
     <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium">contact</label>
+      <label className="text-sm font-medium">Contact</label>
       <input
       name='contact'
         onChange={handleChange}
@@ -143,7 +160,7 @@ export default function FormPoroviderComponent({f5}) {
       
       className="mt-4 rounded-xl bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600 active:scale-95"
     >
-      Add
+       {loading ? 'Submitting...' : 'Add'}
     </button>
   </form>
 </div>
@@ -153,3 +170,4 @@ export default function FormPoroviderComponent({f5}) {
 
   )
 }
+

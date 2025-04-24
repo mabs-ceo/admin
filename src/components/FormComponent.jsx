@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react'
 import LogoutPanel from './LogoutPanel'
 import { createNotification } from '../functions'
 
-const formData = {
-  providerId: '',
-  name: '',
-  dueDate: '',
-  postal: '',
-  
-}
 
 export default function FormComponent({userData,providerDataArray ,success,setSuccess}) {
+ 
+  const formData = {
+    providerId: '',
+    name: '',
+    dueDate: '',
+    postal: '',
+    
+  }
+  
   const[isShown, setIsShown] = useState(false)
 
   const [form, setForm] = useState(formData)
@@ -27,7 +29,7 @@ export default function FormComponent({userData,providerDataArray ,success,setSu
     const { name, value } = e.target
     setForm({ ...form, [name]: value })
   }
- async function handleSubmit(e) {
+ async function handleSubmitOld(e) {
     e.preventDefault()
     setLoading(true)
    const response = await createNotification(form)
@@ -44,6 +46,29 @@ export default function FormComponent({userData,providerDataArray ,success,setSu
       setError('')
       setLoading(false)
     }, 3000)
+  }
+
+  async function handleSubmit(e){
+    e.preventDefault()
+    setLoading(true)
+    try {
+      const response = await createNotification(form)
+      if(response !== 201){
+        setError('Error: Please check all the fields')
+      }else{
+        setSuccess('Notification created successfully')
+      }
+    } catch (error) {
+      console.error(err)
+    setError('Server error. Try again later.')
+    }finally{
+      setTimeout(()=>{
+        setSuccess('')
+        setError('')
+        setLoading(false)
+      },3000)
+    }
+  
   }
 
   

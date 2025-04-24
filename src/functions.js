@@ -22,9 +22,11 @@ export const getUserInfo = async () => {
     const {data} = await axios.get(`${API_URL}/auth/users/status`, {
       withCredentials: true,
     });
+  
 
     return data
   } catch (error) {
+    console.log(error)
     await logoutUser()
     return error?.response?.status;
   

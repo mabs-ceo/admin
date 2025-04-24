@@ -4,7 +4,7 @@ import { deleteNotification } from '../functions';
 export default function ListCompontent({ notificationLists,setNotificationLists }) {
   const [error, setError] =useState('')
   const [loading, setLoading] = useState(false)
-  
+  const [deletingId, setDeletingId] = useState(null)
   const readableData = notificationLists.map((item) => {
     const date = new Date(item.dueDate);
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -20,6 +20,7 @@ export default function ListCompontent({ notificationLists,setNotificationLists 
 
   async function handleDelete(id,e) {
     e.preventDefault()
+    setDeletingId(id)
     setLoading(true)
     setError('')
       const response = await deleteNotification(id);
@@ -27,18 +28,19 @@ export default function ListCompontent({ notificationLists,setNotificationLists 
       if (response === 204) {
         setNotificationLists((prev) => prev.filter((item) => item._id !== id));
         setLoading(false)
+        setDeletingId(null)
       } else {
         setTimeout(() => {
           setError('Error deleting notification');
           setLoading(false)
+          setDeletingId(null)
         }, 3000)
        
         
       }
   
   }
-  useEffect(() => {
-  },[notificationLists])
+ 
 
 
 
@@ -69,8 +71,8 @@ export default function ListCompontent({ notificationLists,setNotificationLists 
             <p className="text-sm text-slate-400">Prayer time: {item.dueDate}</p>
           </div>
         
-          <button disabled={loading} className=" disabled:cursor-not-allowed text-blue-400 hover:underline text-sm"  onClick={(e)=>handleDelete(item._id,e)}> {item.completed ?'delete':'overdue'}</button>
-         {!item.completed && <div className='ml-1 w-1 h-4 rounded-full bg-yellow-300 animate-bounce'></div>}
+          <button disabled={deletingId === item._id}  className=" disabled:cursor-not-allowed text-blue-400 hover:underline text-sm"  onClick={(e)=>handleDelete(item._id,e)}> {deletingId === item._id ? 'Deleting...' : 'Delete'}</button>
+         {!item.completed && <div className='ml-2 w-2 h-2 rounded-full bg-yellow-400 animate-pulse' title="Overdue" />}
         </li>
       ))}
     </ul>}
