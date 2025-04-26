@@ -3,8 +3,8 @@ import React from "react";
 
 const Login = () => {
     const handleGoogleLogin = async() => {
-        // window.location.href = "http://localhost:3000/auth/google";
-        window.location.href = "https://notifier-adminserver.onrender.com/auth/google";
+        window.location.href = "http://localhost:3000/auth/google";
+        // window.location.href = "https://notifier-adminserver.onrender.com/auth/google";
       };
     
       return (

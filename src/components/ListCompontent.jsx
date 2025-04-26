@@ -67,7 +67,11 @@ export default function ListCompontent({ notificationLists,setNotificationLists 
             <p className="font-medium text-white p-1 text-center w-full bg-orange-600 ">Provider: {item.providerName}</p>
             </div>
             <p className="font-medium text-white">{item.name}</p>
-            <p className="text-sm text-slate-400">Address: {item.address}</p>
+            {item?.isShow ?
+            <p className="text-sm text-slate-400">Address: {item?.address}</p>
+            :  
+            <p className="text-sm text-slate-400"> Hide</p>
+          }
             <p className="text-sm text-slate-400">Prayer time: {item.dueDate}</p>
           </div>
         

@@ -10,6 +10,7 @@ export default function FormComponent({userData,providerDataArray ,success,setSu
     name: '',
     dueDate: '',
     postal: '',
+    isShow:false
     
   }
   
@@ -22,15 +23,25 @@ export default function FormComponent({userData,providerDataArray ,success,setSu
   const [loading, setLoading] = useState(false)
 
 
-  const isFormComplete=!form.name || !form.dueDate || !form.postal || !form.providerId
+  const isFormComplete=!form.name   || !form.dueDate  || !form.providerId
+  const isDisplay=!form.name   || !form.dueDate || !form.postal || !form.providerId
    
   
-  function handleChange(e) {
-    const { name, value } = e.target
-    setForm({ ...form, [name]: value })
-  }
+  // function handleChange(e) {
+  //   const { name, value } = e.target
+  //   setForm({ ...form, [name]: value })
+  // }
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
  async function handleSubmitOld(e) {
     e.preventDefault()
+
     setLoading(true)
    const response = await createNotification(form)
 
@@ -50,9 +61,14 @@ export default function FormComponent({userData,providerDataArray ,success,setSu
 
   async function handleSubmit(e){
     e.preventDefault()
+    if(form.isShow === true && !form.postal ){
+      setError('Display address is checked please provide Postal and Time')
+    }
+    
     setLoading(true)
     try {
       const response = await createNotification(form)
+     
       if(response !== 201){
         setError('Error: Please check all the fields')
       }else{
@@ -117,16 +133,30 @@ export default function FormComponent({userData,providerDataArray ,success,setSu
         className="rounded-xl bg-slate-700 px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
+    <div>
+        <label className="flex items-center gap-2 text-sm font-medium">
+          <input
+            type="checkbox"
+            name="isShow"
+            id="isShow"
+            checked={form.isShow}
+            onChange={handleChange}
+            className="accent-slate-500"
+          />
+          Display address
+        </label>
+      </div>
     <div className="flex flex-col gap-1">
       <label className="text-sm font-medium">Postal</label>
       <input
-        name="postal"
-        onChange={handleChange}
-        value={form.postal}
-        type="number"
-        placeholder="Postal"
-        className="rounded-xl bg-slate-700 px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+  name="postal"
+  disabled={!form.isShow} 
+  onChange={handleChange}
+  value={form.postal}
+  type="number"
+  placeholder="Postal"
+  className={`rounded-xl bg-slate-700 px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${!form.isShow ? 'opacity-50 cursor-not-allowed' : ''}`}
+/>
     </div>
 
     <div className="flex flex-col gap-1 mb-5 h-max">    
@@ -144,10 +174,11 @@ export default function FormComponent({userData,providerDataArray ,success,setSu
        
       </select>
     </div>
+   
 
     <button
       onClick={handleSubmit}
-      disabled={loading || isFormComplete}
+      disabled={loading ||  form.isShow && isDisplay }
       className="mt-4 rounded-xl bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       Submit

@@ -92,7 +92,9 @@ export const deleteProvider= async (id) => {
 }
 
 export const createNotification = async (formData) => {
+ 
   try {
+  
     const {data} = await axios.post(`${API_URL}/notification`, formData, {
       withCredentials: true,validateStatus: () => true,
     });
